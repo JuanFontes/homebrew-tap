@@ -40,7 +40,7 @@ zstyle ':completion:*:curlimp:*' menu yes select
 
 This assumes your shell already initialized completion with `compinit`. The second line enables the selection menu for Curlimp. Without that setting, Zsh may complete only the shared prefix on the first Tab (`chrom` becomes `chrome`); press Tab again to see the versions. For a unique match, `curlimp chrome15` + Tab inserts `chrome150`. To keep the menu preference, add the `zstyle` line to `~/.zshrc`.
 
-Otherwise, add this to `~/.zshrc` **before any existing `compinit` call**, or use the full block if you do not have one:
+If completion still does not work in a new tab, add the `fpath` line below to `~/.zshrc` **before any existing `compinit` call**, or use the full block if you do not have one:
 
 ```zsh
 fpath=("$(brew --prefix)/share/zsh/site-functions" $fpath)
@@ -48,7 +48,7 @@ autoload -Uz compinit
 compinit
 ```
 
-You do not need to source `curlimp --completions zsh` separately. The installer does not modify shell configuration files. See the [completion guide](https://juanfontes.github.io/curlimp/docs/completion/) for profile filtering and shell setup.
+New sessions using this setup do not need to source `curlimp --completions zsh` separately. The installer does not modify shell configuration files. See the [completion guide](https://juanfontes.github.io/curlimp/docs/completion/) for profile filtering and shell setup.
 
 ## Upgrade
 

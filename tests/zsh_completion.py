@@ -6,6 +6,7 @@ import select
 import shlex
 import shutil
 import signal
+import subprocess
 import tempfile
 import time
 import unittest
@@ -16,6 +17,17 @@ COMPLETION = Path(os.environ["COMPLETION_DIR"]) / "_curlimp"
 
 
 class InstalledCompletion(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # The engine catalog is independent of the Rust completion dispatcher.
+        profiles = subprocess.check_output([str(CLI), "--list-profiles"], text=True).splitlines()
+        cls.prefix, cls.match = next(
+            (profile[:-1], profile)
+            for profile in profiles
+            if len(profile) > 1 and sum(p.startswith(profile[:-1]) for p in profiles) == 1
+        )
+        cls.chrome = sorted(profile for profile in profiles if profile.startswith("chrom"))
+
     def start_shell(self, *, before_install=False, menu=False):
         temporary = tempfile.TemporaryDirectory(prefix="curlimp-homebrew-zsh-")
         self.addCleanup(temporary.cleanup)
@@ -42,7 +54,7 @@ class InstalledCompletion(unittest.TestCase):
             f"path=({shlex.quote(str(CLI.parent))} $path); "
             f"fpath=({shlex.quote(str(completion_dir))} $fpath); "
             "zmodload zsh/complist; autoload -Uz compinit; compinit -D; "
-            "PROMPT='ready> '; RPROMPT=''; "
+            "PROMPT='ready> '; RPROMPT=''; LISTMAX=0; "
             "capture_buffer() { print -rn -- $'\\x1eBUFFER:'; "
             "print -rn -- $BUFFER; print -r -- $'\\x1f'; BUFFER=''; zle redisplay; }; "
             "zle -N capture_buffer; bindkey '^X' capture_buffer; "
@@ -89,24 +101,25 @@ class InstalledCompletion(unittest.TestCase):
 
     def test_installed_file_completes_a_unique_profile(self):
         self.start_shell()
-        buffer, _ = self.buffer_after(b"curlimp chrome15\t")
-        self.assertEqual(buffer, "curlimp chrome150 ")
+        buffer, _ = self.buffer_after(f"curlimp {self.prefix}\t".encode())
+        self.assertEqual(buffer, f"curlimp {self.match} ")
 
     def test_menu_lists_matching_browsers_and_keeps_the_command_in_the_editor(self):
         self.start_shell(menu=True)
         buffer, screen = self.buffer_after(b"curlimp chrom\t", accept_menu=True)
-        self.assertIn(b"chrome131_android", screen)
-        self.assertIn(b"chrome150", screen)
-        self.assertEqual(buffer, "curlimp chrome100 ")
+        self.assertGreater(len(self.chrome), 1)
+        self.assertIn(self.chrome[0].encode(), screen)
+        self.assertIn(self.chrome[-1].encode(), screen)
+        self.assertEqual(buffer, f"curlimp {self.chrome[0]} ")
 
     def test_existing_session_needs_registration_after_installation(self):
         self.start_shell(before_install=True)
         shutil.copy2(COMPLETION, self.root / "_curlimp")
-        buffer, _ = self.buffer_after(b"curlimp chrome15\t")
-        self.assertEqual(buffer, "curlimp chrome15")
+        buffer, _ = self.buffer_after(f"curlimp {self.prefix}\t".encode())
+        self.assertEqual(buffer, f"curlimp {self.prefix}")
         self.run_command("source <(curlimp --completions zsh);")
-        buffer, _ = self.buffer_after(b"curlimp chrome15\t")
-        self.assertEqual(buffer, "curlimp chrome150 ")
+        buffer, _ = self.buffer_after(f"curlimp {self.prefix}\t".encode())
+        self.assertEqual(buffer, f"curlimp {self.match} ")
 
 
 if __name__ == "__main__":
