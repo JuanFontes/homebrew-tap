@@ -3,7 +3,10 @@
 set -euo pipefail
 
 formula=juanfontes/tap/curlimp
-brew install "$formula"
+install_log="$(mktemp)"
+trap 'rm -f "$install_log"' EXIT
+brew install "$formula" | tee "$install_log"
+grep -Fq 'source <(curlimp --completions zsh)' "$install_log"
 installed_prefix="$(brew --prefix "$formula")"
 installed_keg="$(cd "$installed_prefix" && pwd -P)"
 brew_prefix="$(brew --prefix)"

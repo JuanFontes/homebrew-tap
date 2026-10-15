@@ -35,6 +35,18 @@ class Curlimp < Formula
     zsh_completion.install libexec/"completions/zsh/_curlimp"
   end
 
+  def caveats
+    <<~EOS
+      Zsh profile completion is installed. If your shell already uses compinit,
+      activate it in your current Zsh session with:
+        source <(curlimp --completions zsh)
+
+      Then type curlimp followed by a space and press Tab to discover browser profiles.
+      For shell setup and completion tips:
+        https://juanfontes.github.io/curlimp/docs/completion/
+    EOS
+  end
+
   test do
     assert_match "curlimp #{version}", shell_output("#{bin}/curlimp --version")
     assert_match "firefox147", shell_output("#{bin}/curlimp --list-profiles")

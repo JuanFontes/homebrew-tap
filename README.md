@@ -29,7 +29,7 @@ The formula downloads the corresponding **published native release**, verifies i
 
 ## Zsh completion
 
-The formula installs the completion file into Homebrew's standard Zsh directory. If your shell already loads Homebrew completions, start a new shell and try typing `curlimp chrome1` followed by Tab.
+The formula installs the completion file into Homebrew's standard Zsh directory and prints a tip for activating it in the current session. If your shell already loads Homebrew completions, future sessions pick it up automatically.
 
 **Installed from a terminal that is still open?** That session has not registered the new completion yet. Open a new tab, or register it immediately in the current Zsh session:
 
