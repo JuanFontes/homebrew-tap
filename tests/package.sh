@@ -38,14 +38,8 @@ completion="$brew_prefix/share/zsh/site-functions/_curlimp"
 test -f "$completion"
 # macOS has Zsh; Linux still verifies the installed completion and Rust backend.
 if command -v zsh >/dev/null 2>&1; then
-  BREW_PREFIX="$brew_prefix" zsh -f <<'ZSH'
-set -eu
-fpath=("$BREW_PREFIX/share/zsh/site-functions" $fpath)
-autoload -Uz compinit
-compinit -D
-[[ "${_comps[curlimp]}" == _curlimp ]]
-autoload +X _curlimp
-ZSH
+  CLI="$brew_prefix/bin/curlimp" COMPLETION_DIR="$brew_prefix/share/zsh/site-functions" \
+    python3 tests/zsh_completion.py
 fi
 
 # Exercise TLS and the bundled certificate setup as well as the local HTTP test.

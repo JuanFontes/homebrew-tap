@@ -31,7 +31,16 @@ The formula downloads the corresponding **published native release**, verifies i
 
 The formula installs the completion file into Homebrew's standard Zsh directory. If your shell already loads Homebrew completions, start a new shell and try typing `curlimp chrome1` followed by Tab.
 
-Otherwise, add this to `~/.zshrc` **before any existing `compinit` call**, or use the full block if you do not have one:
+**Installed from a terminal that is still open?** That session has not registered the new completion yet. Open a new tab, or register it immediately in the current Zsh session:
+
+```zsh
+source <(curlimp --completions zsh)
+zstyle ':completion:*:curlimp:*' menu yes select
+```
+
+This assumes your shell already initialized completion with `compinit`. The second line enables the selection menu for Curlimp. Without that setting, Zsh may complete only the shared prefix on the first Tab (`chrom` becomes `chrome`); press Tab again to see the versions. For a unique match, `curlimp chrome15` + Tab inserts `chrome150`. To keep the menu preference, add the `zstyle` line to `~/.zshrc`.
+
+If completion still does not work in a new tab, add the `fpath` line below to `~/.zshrc` **before any existing `compinit` call**, or use the full block if you do not have one:
 
 ```zsh
 fpath=("$(brew --prefix)/share/zsh/site-functions" $fpath)
@@ -39,7 +48,7 @@ autoload -Uz compinit
 compinit
 ```
 
-You do not need to source `curlimp --completions zsh` separately. The installer does not modify shell configuration files. See the [completion guide](https://juanfontes.github.io/curlimp/docs/completion/) for profile filtering and shell setup.
+New sessions using this setup do not need to source `curlimp --completions zsh` separately. The installer does not modify shell configuration files. See the [completion guide](https://juanfontes.github.io/curlimp/docs/completion/) for profile filtering and shell setup.
 
 ## Upgrade
 
@@ -60,7 +69,7 @@ Homebrew removes the installed package, executable link, and managed completion 
 brew untap juanfontes/tap
 ```
 
-CI checks installation, local HTTP, HTTPS, profile completion, and removal of the package and links on all three supported architectures. Zsh loading is also checked on runners that provide Zsh.
+CI checks installation, local HTTP, HTTPS, profile completion, and removal of the package and links on all three supported architectures. Runners with Zsh also press real Tab keys in a pseudo-terminal to test the installed completion, menu selection, and registration in a session opened before installation.
 
 ## Release maintenance
 
