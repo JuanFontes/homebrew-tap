@@ -1,7 +1,7 @@
 class Curlimp < Formula
   desc "HTTP client with browser profiles and response exports"
   homepage "https://juanfontes.github.io/curlimp/"
-  version "0.5.1"
+  version "0.5.2"
   license "MIT"
 
   on_macos do
@@ -9,19 +9,19 @@ class Curlimp < Formula
     depends_on macos: :ventura
 
     on_arm do
-      url "https://github.com/JuanFontes/curlimp/releases/download/v0.5.1/curlimp-0.5.1-macos-arm64.tar.gz"
-      sha256 "f3b8be54cf694e21a51021b788231c0dd3b1c64c354fc73be49a2e8ba8c41074"
+      url "https://github.com/JuanFontes/curlimp/releases/download/v0.5.2/curlimp-0.5.2-macos-arm64.tar.gz"
+      sha256 "5d4b70bb7bc7507061e1b681022dfa6b309a41a7d424a7c6bae243424df0d623"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/JuanFontes/curlimp/releases/download/v0.5.1/curlimp-0.5.1-linux-amd64.tar.gz"
-      sha256 "fe949b33e69fff43d782b5d86b4e5da66ee0829046f4d19e62a963c71f47a1bf"
+      url "https://github.com/JuanFontes/curlimp/releases/download/v0.5.2/curlimp-0.5.2-linux-amd64.tar.gz"
+      sha256 "57304096dae98248f9237f1233fe8c0c743db2a53bb495ea30c21c831a351fdd"
     end
     on_arm do
-      url "https://github.com/JuanFontes/curlimp/releases/download/v0.5.1/curlimp-0.5.1-linux-arm64.tar.gz"
-      sha256 "2a0b631b7069922d656091e440ac56308c3a3bceb31eb8abdee38a691efaca2b"
+      url "https://github.com/JuanFontes/curlimp/releases/download/v0.5.2/curlimp-0.5.2-linux-arm64.tar.gz"
+      sha256 "0cd4b335c7058f8b33c23b64ebd25719b555cb319ca5b6e1a9110bb43463e49c"
     end
   end
 
