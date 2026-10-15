@@ -1,0 +1,89 @@
+name: Update Curlimp
+
+on:
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch:
+    inputs:
+      verify_current:
+        description: Verify current release assets and exercise the full package test pipeline
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: update-curlimp
+  cancel-in-progress: false
+
+jobs:
+  quality:
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/quality.yml
+
+  prepare:
+    needs: quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      changed: ${{ steps.update.outputs.changed }}
+      version: ${{ steps.update.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Verify release assets and prepare the formula
+        id: update
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERIFY_CURRENT: ${{ inputs.verify_current }}
+        run: |
+          if [ "$VERIFY_CURRENT" = true ]; then
+            python3 scripts/update_formula.py --verify-current
+          else
+            python3 scripts/update_formula.py
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: steps.update.outputs.changed == 'true' || inputs.verify_current
+        with:
+          name: formula-candidate
+          path: Formula/curlimp.rb
+          if-no-files-found: error
+          retention-days: 7
+
+  package:
+    needs: prepare
+    if: needs.prepare.outputs.changed == 'true' || inputs.verify_current
+    uses: ./.github/workflows/package.yml
+    with:
+      candidate: true
+
+  publish:
+    needs: [prepare, package]
+    if: needs.prepare.outputs.changed == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+      - name: Commit only the candidate tested on every platform
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name formula-candidate --dir "$RUNNER_TEMP/candidate"
+          cp "$RUNNER_TEMP/candidate/curlimp.rb" Formula/curlimp.rb
+          git diff --exit-code -- . ':!Formula/curlimp.rb'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Formula/curlimp.rb
+          git commit -m "Update curlimp to $VERSION"
+          # A concurrent change to main must fail, never overwrite untested work.
+          git push origin HEAD:refs/heads/main

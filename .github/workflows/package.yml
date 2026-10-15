@@ -1,0 +1,44 @@
+name: Package checks
+
+on:
+  workflow_call:
+    inputs:
+      candidate:
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  package:
+    name: Install and uninstall (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, ubuntu-24.04, ubuntu-24.04-arm]
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: '1'
+      HOMEBREW_NO_INSTALL_CLEANUP: '1'
+      HOMEBREW_NO_ANALYTICS: '1'
+    steps:
+      # This action checks out this tap at the workflow's exact commit.
+      - uses: Homebrew/actions/setup-homebrew@f9676f1ffe2e1a720f81b2c54c51cfb99915ec14
+        with:
+          stable: true
+      - name: Use the verified update candidate
+        if: inputs.candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name formula-candidate --dir "$RUNNER_TEMP/candidate"
+          cp "$RUNNER_TEMP/candidate/curlimp.rb" Formula/curlimp.rb
+      - name: Check Ruby style
+        if: runner.os == 'macOS'
+        run: brew style Formula/curlimp.rb
+      - name: Install, test, and uninstall
+        run: bash tests/package.sh
