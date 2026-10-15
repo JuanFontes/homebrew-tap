@@ -8,8 +8,10 @@ class Curlimp < Formula
     depends_on arch: :arm64
     depends_on macos: :ventura
 
-    url "https://github.com/JuanFontes/curlimp/releases/download/v0.5.1/curlimp-0.5.1-macos-arm64.tar.gz"
-    sha256 "f3b8be54cf694e21a51021b788231c0dd3b1c64c354fc73be49a2e8ba8c41074"
+    on_arm do
+      url "https://github.com/JuanFontes/curlimp/releases/download/v0.5.1/curlimp-0.5.1-macos-arm64.tar.gz"
+      sha256 "f3b8be54cf694e21a51021b788231c0dd3b1c64c354fc73be49a2e8ba8c41074"
+    end
   end
 
   on_linux do
@@ -24,8 +26,8 @@ class Curlimp < Formula
   end
 
   # Keep the tested native library layout, signatures, licenses, and provenance.
-  skip_clean "libexec"
   preserve_rpath
+  skip_clean "libexec"
 
   def install
     libexec.install Dir["*"]
