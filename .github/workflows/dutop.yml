@@ -1,0 +1,28 @@
+name: Dutop package checks
+on:
+  push:
+    branches: [main]
+    paths: ['Formula/dutop.rb', 'tests/dutop-package.sh', '.github/workflows/dutop.yml']
+  pull_request:
+    paths: ['Formula/dutop.rb', 'tests/dutop-package.sh', '.github/workflows/dutop.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-15-intel, ubuntu-24.04, ubuntu-24.04-arm]
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: '1'
+      HOMEBREW_NO_INSTALL_CLEANUP: '1'
+      HOMEBREW_NO_ANALYTICS: '1'
+    steps:
+      - uses: Homebrew/actions/setup-homebrew@f9676f1ffe2e1a720f81b2c54c51cfb99915ec14
+        with:
+          stable: true
+      - run: brew style Formula/dutop.rb
+      - run: bash tests/dutop-package.sh
