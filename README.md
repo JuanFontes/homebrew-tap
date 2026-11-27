@@ -3,6 +3,32 @@
 [![CI](https://github.com/JuanFontes/homebrew-tap/actions/workflows/ci.yml/badge.svg)](https://github.com/JuanFontes/homebrew-tap/actions/workflows/ci.yml)
 [![Release updates](https://github.com/JuanFontes/homebrew-tap/actions/workflows/update.yml/badge.svg)](https://github.com/JuanFontes/homebrew-tap/actions/workflows/update.yml)
 
+Install native command-line tools without a build toolchain.
+
+## dutop
+
+[**dutop**](https://github.com/JuanFontes/dutop) shows the largest immediate folders
+and files in two ranked panels, with complete allocated disk usage.
+
+```sh
+brew install juanfontes/tap/dutop
+dutop --top 4 ~/Downloads
+```
+
+Packages support macOS 13+ on Apple Silicon and Intel, and Linux ARM64/x86_64.
+Native CI covers macOS 15 and Ubuntu 24.04. The formula installs a checksummed
+release archive; Rust and Python are not runtime dependencies.
+
+Use `brew upgrade dutop` to update or `brew uninstall dutop` to remove it.
+If you previously installed a manual copy, check `type -a dutop` for a binary
+that appears before Homebrew in `PATH`.
+
+The initial version is a beta. Dutop updates are reviewed separately from the
+automatic Curlimp updater. Its bundled dependency notices are installed under
+Homebrew’s `share/dutop/licenses`.
+
+## Curlimp
+
 Install [Curlimp](https://github.com/JuanFontes/curlimp), an HTTP client with browser profiles, familiar curl-style commands, and response exports.
 
 ## Install
@@ -100,4 +126,4 @@ python3 scripts/update_formula.py --verify-current
 - [Curlimp source and releases](https://github.com/JuanFontes/curlimp)
 - [Report a packaging problem](https://github.com/JuanFontes/homebrew-tap/issues)
 
-Tap code is MIT-licensed. The installed native packages retain their component licenses, attribution notices, and provenance files under the formula's `libexec` directory.
+Tap code is MIT-licensed. The installed native packages retain their component licenses, attribution notices, and provenance files under Curlimp's `libexec` directory or `share/dutop/licenses`, respectively.
