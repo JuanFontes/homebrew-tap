@@ -16,7 +16,8 @@ cask "alumia" do
 
   caveats do
     <<~EOS
-      O aplicativo usa assinatura ad hoc. O macOS pode pedir confirmação na primeira abertura.
+      Esta versão usa assinatura ad hoc e ainda não tem notarização da Apple.
+      O Gatekeeper bloqueou a abertura nos testes com macOS 27.3.
     EOS
   end
 end
