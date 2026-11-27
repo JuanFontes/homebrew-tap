@@ -1,29 +1,29 @@
 class Dutop < Formula
   desc "Big folders, big files, and complete disk usage in two ranked panels"
   homepage "https://github.com/JuanFontes/dutop"
-  version "0.1.0-beta.1"
+  version "0.1.0"
   license "MIT"
 
   on_macos do
     depends_on macos: :ventura
     on_arm do
-      url "https://github.com/JuanFontes/dutop/releases/download/v0.1.0-beta.1/dutop-0.1.0-beta.1-aarch64-apple-darwin.tar.gz"
-      sha256 "38490cb7c78173d68164c359641d39af4ae7f17d9c74db9ab04584d5ff891cfe"
+      url "https://github.com/JuanFontes/dutop/releases/download/v0.1.0/dutop-0.1.0-aarch64-apple-darwin.tar.gz"
+      sha256 "00c03f70a067007fb826d1665c0e0ca55e9ca8236d6ce648db81fa571d85db9c"
     end
     on_intel do
-      url "https://github.com/JuanFontes/dutop/releases/download/v0.1.0-beta.1/dutop-0.1.0-beta.1-x86_64-apple-darwin.tar.gz"
-      sha256 "8023c0df816a41e58eac3265d022f0b38d57ddb2d998bc31106f3431c3803595"
+      url "https://github.com/JuanFontes/dutop/releases/download/v0.1.0/dutop-0.1.0-x86_64-apple-darwin.tar.gz"
+      sha256 "ee4af3d0979fd0ad3683ee4556eb75b6f8f75453a97b3396bd45964e6bfea615"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/JuanFontes/dutop/releases/download/v0.1.0-beta.1/dutop-0.1.0-beta.1-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "032b6552ff46b17ce10318408e4b0d6a6f73b52599c41643fcd8fb252d0833ec"
+      url "https://github.com/JuanFontes/dutop/releases/download/v0.1.0/dutop-0.1.0-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "ab559973e5475e0fa9cb7d072d391b34e75105868a1a92afbbb12fa35085f467"
     end
     on_intel do
-      url "https://github.com/JuanFontes/dutop/releases/download/v0.1.0-beta.1/dutop-0.1.0-beta.1-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "0e438974aa9a460c6f39874a51a155016a9f55ac577b269b83fa45c6c49369b7"
+      url "https://github.com/JuanFontes/dutop/releases/download/v0.1.0/dutop-0.1.0-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "220f72c6d227cb3da88fbc38755b9c6ef0efd00333634f44721425459582ae6a"
     end
   end
 

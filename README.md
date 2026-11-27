@@ -23,8 +23,7 @@ Use `brew upgrade dutop` to update or `brew uninstall dutop` to remove it.
 If you previously installed a manual copy, check `type -a dutop` for a binary
 that appears before Homebrew in `PATH`.
 
-The initial version is a beta. Dutop updates are reviewed separately from the
-automatic Curlimp updater. Its bundled dependency notices are installed under
+Dutop updates are reviewed separately from the automatic Curlimp updater. Its bundled dependency notices are installed under
 Homebrew’s `share/dutop/licenses`.
 
 ## Curlimp
